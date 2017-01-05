@@ -9,12 +9,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
+import org.jdesktop.swingx.prompt.PromptSupport;
 import com.caucho.hessian.client.HessianProxyFactory;
-
 import pl.stepniewski.java_chat_contracts.CommunicationService;
 
 public class HessianClient {
+
+	private static Integer userId = 0;
+	private static String userName = null;
 
 	public static void main(String[] args) throws Exception {
 		String url = "http://localhost:8080/communication-service";
@@ -27,7 +29,8 @@ public class HessianClient {
 				JFrame frame = new JFrame("Hessian Hello World");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setLayout(new BorderLayout());
-				final JTextField field = new JTextField("Peter", 100);
+				final JTextField field = new JTextField(100);
+				PromptSupport.setPrompt("Podaj Login", field);
 				frame.add(field, BorderLayout.SOUTH);
 				field.setToolTipText("Press Enter to submit text to server");
 
@@ -39,7 +42,23 @@ public class HessianClient {
 				field.addActionListener(new ActionListener() {
 
 					public void actionPerformed(ActionEvent e) {
-						resultArea.append("Server said : " + basic.communicate(field.getText()) + "\n");
+						if (userName == null) {
+							String newUserName = field.getText();
+							Integer newUserId = basic.Login(newUserName);
+							if (newUserId == -1) {
+								resultArea.append(
+										"Użytkownik o loginie " + newUserName + " już istnieje. Wybierz inny login \n");
+							} else {
+								userId = newUserId;
+								userName = newUserName;
+								PromptSupport.setPrompt("Wiadomość", field);
+								resultArea.append(
+										"Zalogowałeś się jako " + userName + " o numerze Id "+ userId + "\n");
+								field.setText("");
+							}
+						} else {
+							resultArea.append("Server said : " + basic.communicate(field.getText()) + "\n");
+						}
 					}
 				});
 

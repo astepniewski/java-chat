@@ -1,6 +1,10 @@
 package pl.stepniewski.java_chat;
 
 import com.caucho.hessian.server.HessianServlet;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 
@@ -12,6 +16,8 @@ public class HessianServer extends HessianServlet implements CommunicationServic
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static Map<Integer, String> users = new HashMap<Integer, String>();
+	private static Integer newUserId = 0;
 
 	public String communicate(String str) {
 		return "Hello World! " + str;
@@ -22,5 +28,13 @@ public class HessianServer extends HessianServlet implements CommunicationServic
 		Context context = new Context(server, "/", Context.SESSIONS);
 		context.addServlet(HessianServer.class, "/communication-service");
 		server.start();
+	}
+
+	public Integer Login(String userName) {
+		if (users.containsValue(userName)) {
+			return -1;
+		}
+		users.put(++newUserId, userName);
+		return newUserId;
 	}
 }
