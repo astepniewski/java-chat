@@ -15,16 +15,15 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 import com.caucho.hessian.client.HessianProxyFactory;
 import pl.stepniewski.java_chat_contracts.CommunicationService;
 
-public class HessianClient {
+public class Client {
 
 	protected static final int TIMER_DELAY = 100;
 	private static Integer userId = 0;
 	private static String userName = null;
 
 	public static void main(String[] args) throws Exception {
-		String url = "http://localhost:8080/communication-service";
-		HessianProxyFactory factory = new HessianProxyFactory();
-		final CommunicationService basic = (CommunicationService) factory.create(CommunicationService.class, url);
+
+		final CommunicationService basic = ServiceFactory.create(ClientType.Burlap);
 		final JTextArea resultArea = new JTextArea();
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -65,13 +64,13 @@ public class HessianClient {
 						}
 					}
 				});
-				
+
 				frame.addWindowListener(new java.awt.event.WindowAdapter() {
-			        public void windowClosing(WindowEvent winEvt) {
-			            basic.SignOut(userId);
-			            System.exit(0);
-			        }
-			    });
+					public void windowClosing(WindowEvent winEvt) {
+						basic.SignOut(userId);
+						System.exit(0);
+					}
+				});
 
 				frame.setSize(600, 400);
 				frame.setVisible(true);
