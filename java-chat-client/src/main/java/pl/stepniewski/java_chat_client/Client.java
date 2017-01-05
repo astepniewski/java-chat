@@ -23,7 +23,7 @@ public class Client {
 
 	public static void main(String[] args) throws Exception {
 
-		final CommunicationService basic = ServiceFactory.create(ClientType.Burlap);
+		final CommunicationService basic = ServiceFactory.create(ClientType.Hessian);
 		final JTextArea resultArea = new JTextArea();
 
 		SwingUtilities.invokeLater(new Runnable() {

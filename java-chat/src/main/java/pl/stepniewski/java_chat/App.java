@@ -10,5 +10,6 @@ public class App
     {
         HessianServer.start();
         BurlapServer.start();
+        XmlRpcServer.start();
     }
 }
