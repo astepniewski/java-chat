@@ -29,13 +29,13 @@ public class HessianClient {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
-				JFrame frame = new JFrame("Hessian Hello World");
+				JFrame frame = new JFrame("Chat Client");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setLayout(new BorderLayout());
 				final JTextField field = new JTextField(100);
 				PromptSupport.setPrompt("Podaj Login", field);
 				frame.add(field, BorderLayout.SOUTH);
-				field.setToolTipText("Press Enter to submit text to server");
+				field.setToolTipText("Naciśnij enter, żeby wysłać do serwera.");
 
 				JScrollPane scroll = new JScrollPane(resultArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 						JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
