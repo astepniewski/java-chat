@@ -3,6 +3,7 @@ package pl.stepniewski.java_chat_client;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 
 import javax.swing.JFrame;
@@ -46,7 +47,7 @@ public class HessianClient {
 					public void actionPerformed(ActionEvent e) {
 						if (userName == null) {
 							String newUserName = field.getText();
-							Integer newUserId = basic.Login(newUserName);
+							Integer newUserId = basic.SignIn(newUserName);
 							if (newUserId == -1) {
 								resultArea.append(
 										"Użytkownik o loginie " + newUserName + " już istnieje. Wybierz inny login \n");
@@ -64,6 +65,13 @@ public class HessianClient {
 						}
 					}
 				});
+				
+				frame.addWindowListener(new java.awt.event.WindowAdapter() {
+			        public void windowClosing(WindowEvent winEvt) {
+			            basic.SignOut(userId);
+			            System.exit(0);
+			        }
+			    });
 
 				frame.setSize(600, 400);
 				frame.setVisible(true);

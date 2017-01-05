@@ -34,7 +34,7 @@ public class HessianServer extends HessianServlet implements CommunicationServic
 		server.start();
 	}
 
-	public Integer Login(String userName) {
+	public Integer SignIn(String userName) {
 		if (users.containsValue(userName)) {
 			return -1;
 		}
@@ -60,5 +60,10 @@ public class HessianServer extends HessianServlet implements CommunicationServic
 			return messages;
 		}
 		return new LinkedList<String>();
+	}
+
+	public void SignOut(Integer userId) {
+		users.remove(userId);
+		unreadedMessages.remove(userId);
 	}
 }
