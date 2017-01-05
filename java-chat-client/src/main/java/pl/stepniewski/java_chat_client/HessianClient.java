@@ -3,8 +3,9 @@ package pl.stepniewski.java_chat_client;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
+
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -15,6 +16,7 @@ import pl.stepniewski.java_chat_contracts.CommunicationService;
 
 public class HessianClient {
 
+	protected static final int TIMER_DELAY = 100;
 	private static Integer userId = 0;
 	private static String userName = null;
 
@@ -22,6 +24,7 @@ public class HessianClient {
 		String url = "http://localhost:8080/communication-service";
 		HessianProxyFactory factory = new HessianProxyFactory();
 		final CommunicationService basic = (CommunicationService) factory.create(CommunicationService.class, url);
+		final JTextArea resultArea = new JTextArea();
 
 		SwingUtilities.invokeLater(new Runnable() {
 
@@ -34,7 +37,6 @@ public class HessianClient {
 				frame.add(field, BorderLayout.SOUTH);
 				field.setToolTipText("Press Enter to submit text to server");
 
-				final JTextArea resultArea = new JTextArea();
 				JScrollPane scroll = new JScrollPane(resultArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 						JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 				frame.add(scroll, BorderLayout.CENTER);
@@ -52,18 +54,34 @@ public class HessianClient {
 								userId = newUserId;
 								userName = newUserName;
 								PromptSupport.setPrompt("Wiadomość", field);
-								resultArea.append(
-										"Zalogowałeś się jako " + userName + " o numerze Id "+ userId + "\n");
+								resultArea
+										.append("Zalogowałeś się jako " + userName + " o numerze Id " + userId + "\n");
 								field.setText("");
 							}
 						} else {
-							resultArea.append("Server said : " + basic.communicate(field.getText()) + "\n");
+							basic.SendMessage(userId, field.getText());
+							field.setText("");
 						}
 					}
 				});
 
 				frame.setSize(600, 400);
 				frame.setVisible(true);
+
+				javax.swing.Timer timer = new javax.swing.Timer(TIMER_DELAY, GetMessagesActionListner());
+				timer.setInitialDelay(1);
+				timer.start();
+			}
+
+			private ActionListener GetMessagesActionListner() {
+				return new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						LinkedList<String> messages = basic.GetMessages(userId);
+						for (String message : messages) {
+							resultArea.append(message);
+						}
+					}
+				};
 			}
 		});
 	}
