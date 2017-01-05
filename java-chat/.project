@@ -3,6 +3,7 @@
 	<name>java-chat-server</name>
 	<comment></comment>
 	<projects>
+		<project>java-chat-contracts</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
