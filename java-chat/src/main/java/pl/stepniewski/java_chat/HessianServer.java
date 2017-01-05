@@ -19,13 +19,6 @@ public class HessianServer extends HessianServlet implements CommunicationServic
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static Map<Integer, String> users = new HashMap<Integer, String>();
-	private static Map<Integer, LinkedList<String>> unreadedMessages = new HashMap<Integer, LinkedList<String>>();
-	private static Integer newUserId = 0;
-
-	public String communicate(String str) {
-		return "Hello World! " + str;
-	}
 
 	public static void start() throws Exception {
 		Server server = new Server(8080);
@@ -35,35 +28,18 @@ public class HessianServer extends HessianServlet implements CommunicationServic
 	}
 
 	public Integer SignIn(String userName) {
-		if (users.containsValue(userName)) {
-			return -1;
-		}
-		users.put(++newUserId, userName);
-		unreadedMessages.put(newUserId, new LinkedList<String>());
-		return newUserId;
+		return MainServer.SignIn(userName);
 	}
 
 	public void SendMessage(Integer senderId, String message) {
-		for(Entry<Integer, LinkedList<String>> entry : unreadedMessages.entrySet()) {
-		    Integer userId = entry.getKey();
-		    if(userId != senderId){
-		    	LinkedList<String> messages = entry.getValue();
-		    	messages.add(users.get(senderId) + ": " + message + "\n");
-		    }
-		}
+		MainServer.SendMessage(senderId, message);
 	}
 
 	public LinkedList<String> GetMessages(Integer clientId) {
-		if(unreadedMessages.get(clientId) != null){
-			LinkedList<String> messages = (LinkedList<String>) unreadedMessages.get(clientId).clone();
-			unreadedMessages.get(clientId).removeAll(messages);
-			return messages;
-		}
-		return new LinkedList<String>();
+		return MainServer.GetMessages(clientId);
 	}
 
 	public void SignOut(Integer userId) {
-		users.remove(userId);
-		unreadedMessages.remove(userId);
+		MainServer.SignOut(userId);
 	}
 }
